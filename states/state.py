@@ -1,7 +1,5 @@
 from aiogram.fsm.state import StatesGroup, State
 
-
-
 prev_and_cancel = ["Назад", "Отмена"]
 prev_cancel_done = ["Назад", "Отмена", 'Подтвердить']
 reg_page = ["Вход", "Регистрация"]
@@ -10,9 +8,7 @@ second_page = ["Обьявления", "Создание", "Профиль", "Я
 list_profile = ['Mой профиль', 'Мои обьявления', 'Отмена']
 
 
-
-
-class FirstPage(StatesGroup):
+class RegPage(StatesGroup):
     reg_or_auth = State()
     reg_email = State()
     reg_pass1 = State()
@@ -27,8 +23,7 @@ class FirstPage(StatesGroup):
     list_log_state = [log_email, log_pass]
 
 
-
-class SecondPage(StatesGroup):
+class WorkPage(StatesGroup):
     workspace = State()
     announcement_view = State()
     announcement_create = State()
@@ -41,4 +36,46 @@ class SecondPage(StatesGroup):
     list_workspace_text = ["Главный экран, Мои обьявления", "Создание обьялении", "Профиль"]
 
 
+class CreatePage(StatesGroup):
+    schema_apart = State()
+    image_places = State()
+    infrastructure_id = State()
+    riser_id = State()
+    floor_id = State()
+    view_apart = State()
+    technology = State()
+    apart_status = State()
+    quantity = State()
+    appointment = State()
+    state_apart = State()
+    plane = State()
+    area = State()
+    kitchen_area = State()
+    balcony = State()
+    heating = State()
+    payment = State()
+    commission = State()
+    communication = State()
+    apart_description = State()
+    price = State()
 
+    list_create_state = [schema_apart, image_places, infrastructure_id, riser_id, floor_id, view_apart,
+                         technology, apart_status, quantity, appointment, state_apart, plane,
+                         area, kitchen_area, balcony, heating, payment, commission,
+                         communication, apart_description, price]
+    list_create_text = ['Схема_квартиры', 'Изображения', 'Идентификатор_инфраструктуры',
+                        'Идентификатор_парадной', 'Идентификатор_этажа', 'Вид_квартиры',
+                        'Технология', 'Статус_квартиры', 'Количество', 'Назначение', 'Состояние_квартиры', 'План',
+                        'Площадь', 'Площадь_кухни', 'Балкон', 'Отопление', 'Оплата', 'Комиссия',
+                        'Связь', 'Описание_квартиры', 'Цена']
+
+    communication_list = ['Звонок', 'Сообщение', 'Звонок+Сообщение']
+    view_list = ['Вторичное жилье', 'Новострой', 'Коттедж']
+    technology_list = ['Панельный', 'Монолит']
+    apart_status_list = ['Сдан', 'Не сдан']
+    quantity_list = ['1-комнатная', '2-комнатная', '3-комнатная', '4-комнатная']
+    appointment_list = ['Жилая', 'Коммерческая', 'Промышленная']
+    state_list = ['Требует ремонта', 'Ремонт от строителей']
+    balcony_list = ['Да', 'Нет']
+    heating_list = ['Электрическое', 'Газовое']
+    plane_list = ['Студия', 'Стандарт', 'Свободная', 'Пентхаус']

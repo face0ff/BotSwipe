@@ -4,7 +4,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, ReplyKeyboardRemove, CallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from handlers.first_handlers import start_reg
+from handlers.reg_handlers import start_reg
 from keyboards.reply_row import make_row_keyboard
 from services.api import Api
 from services.filters import ChangeFilter
@@ -21,7 +21,7 @@ async def workspace(message: Message, state: FSMContext):
         text="Это ваш профиль",
         reply_markup=make_row_keyboard(list_profile)
     )
-    await state.set_state(SecondPage.my_profile)
+    await state.set_state(WorkPage.my_profile)
 
 
 @router.message(F.text == 'Mой профиль')
@@ -40,7 +40,7 @@ async def profile(message: Message, state: FSMContext):
                  f"Фамилия {get_something['last_name']}",
             reply_markup=make_row_keyboard(list_profile)
         )
-        await state.set_state(SecondPage.my_annoncement)
+        await state.set_state(WorkPage.my_annoncement)
     else:
         await message.answer(
             text='Refresh токен все, предеться вводить пароль',
@@ -53,6 +53,7 @@ async def annoncement(message: Message, state: FSMContext):
     user_id = message.from_user.id
     user_data = await Database.save_user(user_id=user_id, email=None, password=None, access_token=None,
                                          refresh_token=None)
+
     api = Api()
     get_something = await api.get_something(user_id, user_data.get('access_token'), user_data.get('refresh_token'),
                                             'api/v1/apartment/my_apartment/')
@@ -86,7 +87,7 @@ async def annoncement(message: Message, state: FSMContext):
             reply_markup=make_row_keyboard(log_page)
         )
         await start_reg(message, state)
-@router.message(SecondPage.announcement_view)
+@router.message(WorkPage.announcement_view)
 @router.message(F.text == 'Обьявления')
 async def annoncement_view(message: Message, state: FSMContext):
     data = await state.get_data()
@@ -98,25 +99,24 @@ async def annoncement_view(message: Message, state: FSMContext):
     # print(user_id)
     user_data = await Database.save_user(user_id=user_id, email=None, password=None, access_token=None,
                                          refresh_token=None)
+    print('1111111111111111')
+    print(user_data)
     api = Api()
     get_something = await api.get_something(user_id, user_data.get('access_token'), user_data.get('refresh_token'),
                                             'api/v1/apartment/')
 
-    prev_annoncement = InlineKeyboardBuilder()
-    prev_annoncement.add(types.InlineKeyboardButton(
+    annoncement_buttons = InlineKeyboardBuilder()
+    annoncement_buttons.add(types.InlineKeyboardButton(
         text="Предидущее",
         callback_data=ChangeFilter(text="prev_annoncement").pack())
-    )
-    next_annoncement = InlineKeyboardBuilder()
-    next_annoncement.add(types.InlineKeyboardButton(
+    ).add(types.InlineKeyboardButton(
         text="Следующее",
         callback_data=ChangeFilter(text="next_annoncement").pack())
-    )
-    geo = InlineKeyboardBuilder()
-    geo.add(types.InlineKeyboardButton(
+    ).add(types.InlineKeyboardButton(
         text="Геолокация",
         callback_data=ChangeFilter(text="geo").pack())
     )
+
 
     if get_something:
         queryset = get_something['results']
@@ -141,19 +141,12 @@ async def annoncement_view(message: Message, state: FSMContext):
             f"ЖК: {queryset[i]['infrastructure_id']}\n"
             f"Этаж: {queryset[i]['floor_id']['number']}\n"
             f"Парадная: {queryset[i]['riser_id']['number']}\n",
-            reply_markup=make_row_keyboard(second_page)
+            reply_markup=annoncement_buttons.as_markup()
         )
-        await message.answer(
-            text="Показать где находиться.",
-            reply_markup=geo.as_markup(),
-        )
-        await message.answer(
-            text="<<<",
-            reply_markup=prev_annoncement.as_markup(),
-        )
+
         await message.answer(
             text=">>>",
-            reply_markup=next_annoncement.as_markup(),
+            reply_markup=make_row_keyboard(second_page),
         )
     else:
         await message.answer(

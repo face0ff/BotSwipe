@@ -50,7 +50,6 @@ class Api:
         else:
             return False
 
-
     async def get_something(self, user_id, access_token, refresh_token, endpoint):
         print(refresh_token)
         url = self.base_url + endpoint
@@ -65,24 +64,27 @@ class Api:
                     return await response.json()
                 elif response.status == 401:
                     print('token expired')
-                    endpoint = 'api/auth/token/refresh/'
-                    url = self.base_url + endpoint
+                    refresh_endpoint = 'api/auth/token/refresh/'
+                    url = self.base_url + refresh_endpoint
+                    print(f'тут должен быть рефреш токен {refresh_token}')
 
                     payload = {
                         "refresh": refresh_token
                     }
                     async with session.post(url, json=payload) as refresh_response:
-                        if response.status == 200:
+                        if refresh_response.status == 200:
                             data = await refresh_response.json()
                             access_token = data['access']
                             refresh_token = data['refresh']
                             await Database.save_user(user_id=user_id, email=None, password=None,
                                                      access_token=access_token, refresh_token=refresh_token)
 
-                            return await refresh_response.json()
-                        elif response.status == 401:
+                            await self.get_something(user_id, access_token, refresh_token, endpoint)
+                        elif refresh_response.status == 401:
+                            print('Не прошел запрос по рефрешу')
                             return False
                 else:
                     print(f"Error: {response.status}")
                     return None
+
 

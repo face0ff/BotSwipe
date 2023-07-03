@@ -1,6 +1,6 @@
 from aiogram.fsm.storage.memory import MemoryStorage
 
-from handlers import first_handlers, second_handlers
+from handlers import reg_handlers, work_handlers, create_handlers
 from settings.config import config
 import asyncio
 import logging
@@ -12,8 +12,9 @@ async def main():
     logging.basicConfig(level=logging.INFO)
     bot = Bot(token=config.bot_token.get_secret_value())
     dp = Dispatcher(storage=MemoryStorage())
-    dp.include_router(first_handlers.router)
-    dp.include_router(second_handlers.router)
+    dp.include_router(reg_handlers.router)
+    dp.include_router(work_handlers.router)
+    dp.include_router(create_handlers.router)
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
     # database = Database()
