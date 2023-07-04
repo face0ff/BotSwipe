@@ -16,6 +16,7 @@ router = Router()
 
 @router.message(F.text == 'Создание')
 async def schema_apart(message: Message, state: FSMContext):
+    await state.set_state(CreatePage.list_create_state[0])
     await message.answer(
         text=f"Выберите {CreatePage.list_create_text[0]}",
         reply_markup=make_row_keyboard(prev_and_cancel)
@@ -48,21 +49,25 @@ async def all_state(message: Message, state: FSMContext):
         )
     else:
         await message.answer(
-            text=f"Выберите {CreatePage.list_create_text[index]}",
+            text=f"Выберите {CreatePage.list_create_text[index+1]}",
             reply_markup=make_row_keyboard(prev_and_cancel)
         )
 
+
     await save_data_to_redis(str(curr_state).split(':')[-1], message.text)
+    await save_data_to_redis('prev_state', curr_state)
     next_state_value = await next_state(curr_state)
     await state.set_state(next_state_value)
 
 async def next_state(curr_state):
     index = CreatePage.list_create_state.index(curr_state)
+    print(index)
     if index <= len(CreatePage.list_create_state)-2:
         next_state_value = CreatePage.list_create_state[index+1]
     else:
         next_state_value = CreatePage.list_create_state[-1]
     return next_state_value
+
 
 @router.message(CreatePage.finish)
 async def finish(message: Message, state: FSMContext):

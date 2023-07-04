@@ -7,7 +7,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from keyboards.reply_row import make_row_keyboard
 from services.api import Api
 from services.filters import ChangeFilter
-from settings.database import Database
+from settings.database import Database, get_data_from_redis
 from states.state import *
 
 router = Router()
@@ -77,10 +77,10 @@ async def reg_prev(message: Message, state: FSMContext):
             await state.set_state(WorkPage.workspace)
         else:
             await message.answer(
-                text=f"Выберите {CreatePage.list_create_text[index - 1]}",
+                text=f"Выберите {CreatePage.list_create_text[index-1]}",
                 reply_markup=make_row_keyboard(prev_and_cancel)
             )
-            await state.set_state(CreatePage.list_create_state[index - 1])
+            await state.set_state(CreatePage.list_create_state[index-1])
 
 
     elif curr_state not in RegPage.list_reg_state or curr_state == RegPage.list_reg_state[0]:
