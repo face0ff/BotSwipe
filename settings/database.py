@@ -1,4 +1,38 @@
 import motor.motor_asyncio
+from redis.asyncio.client import Redis
+
+from settings.config import config
+
+
+# Создание подключения к Redis
+async def create_redis_connection():
+    redis = await Redis.from_url("redis://localhost")
+    return redis
+
+# Сохранение данных в Redis
+async def save_data_to_redis(key, value):
+    redis = await create_redis_connection()
+    print(key, value)
+    await redis.set(key, value)
+    await redis.close()
+
+
+async def get_data_from_redis(key):
+    redis = await create_redis_connection()
+    value = await redis.get(key)
+    await redis.close()
+    return value
+
+async def get_alldata_from_redis(state_list):
+
+    redis = await create_redis_connection()
+    data = {}
+    for state in state_list:
+        value = await redis.get(str(state))
+        data[state] = value
+
+    await redis.close()
+    return data
 
 
 class Database:

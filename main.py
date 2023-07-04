@@ -1,14 +1,15 @@
 from aiogram.fsm.storage.memory import MemoryStorage
-
 from handlers import reg_handlers, work_handlers, create_handlers
 from settings.config import config
 import asyncio
 import logging
 import sys
 from aiogram import Bot, Dispatcher
-
+# from aiogram.fsm.storage.redis import RedisStorage
+# from redis.asyncio.client import Redis
 
 async def main():
+
     logging.basicConfig(level=logging.INFO)
     bot = Bot(token=config.bot_token.get_secret_value())
     dp = Dispatcher(storage=MemoryStorage())
