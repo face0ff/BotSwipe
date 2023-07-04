@@ -2,6 +2,7 @@ from aiogram.fsm.state import StatesGroup, State
 
 prev_and_cancel = ["Назад", "Отмена"]
 prev_cancel_done = ["Назад", "Отмена", 'Подтвердить']
+cancel_done = ["Отмена", 'Подтвердить']
 reg_page = ["Вход", "Регистрация"]
 log_page = ["Вход"]
 second_page = ["Обьявления", "Создание", "Профиль", "Язык"]
@@ -58,24 +59,25 @@ class CreatePage(StatesGroup):
     communication = State()
     apart_description = State()
     price = State()
+    finish = State()
 
     list_create_state = [schema_apart, image_places, infrastructure_id, riser_id, floor_id, view_apart,
                          technology, apart_status, quantity, appointment, state_apart, plane,
                          area, kitchen_area, balcony, heating, payment, commission,
-                         communication, apart_description, price]
+                         communication, apart_description, price, finish]
     list_create_text = ['Схема_квартиры', 'Изображения', 'Идентификатор_инфраструктуры',
                         'Идентификатор_парадной', 'Идентификатор_этажа', 'Вид_квартиры',
                         'Технология', 'Статус_квартиры', 'Количество', 'Назначение', 'Состояние_квартиры', 'План',
                         'Площадь', 'Площадь_кухни', 'Балкон', 'Отопление', 'Оплата', 'Комиссия',
-                        'Связь', 'Описание_квартиры', 'Цена']
+                        'Связь', 'Описание_квартиры', 'Цена', 'Финиш']
 
     communication_list = ['Звонок', 'Сообщение', 'Звонок+Сообщение']
-    view_list = ['Вторичное жилье', 'Новострой', 'Коттедж']
+    view_apart_list = ['Вторичное жилье', 'Новострой', 'Коттедж']
     technology_list = ['Панельный', 'Монолит']
     apart_status_list = ['Сдан', 'Не сдан']
     quantity_list = ['1-комнатная', '2-комнатная', '3-комнатная', '4-комнатная']
     appointment_list = ['Жилая', 'Коммерческая', 'Промышленная']
-    state_list = ['Требует ремонта', 'Ремонт от строителей']
+    state_apart_list = ['Требует ремонта', 'Ремонт от строителей']
     balcony_list = ['Да', 'Нет']
     heating_list = ['Электрическое', 'Газовое']
     plane_list = ['Студия', 'Стандарт', 'Свободная', 'Пентхаус']
