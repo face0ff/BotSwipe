@@ -29,7 +29,7 @@ async def get_alldata_from_redis(state_list):
     data = {}
     for state in state_list:
         value = await redis.get(str(state))
-        data[state] = value
+        data[state] = value.decode()
 
     await redis.close()
     return data

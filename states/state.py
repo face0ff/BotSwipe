@@ -64,12 +64,12 @@ class CreatePage(StatesGroup):
     list_create_state = [schema_apart, image_places, infrastructure_id, riser_id, floor_id, view_apart,
                          technology, apart_status, quantity, appointment, state_apart, plane,
                          area, kitchen_area, balcony, heating, payment, commission,
-                         communication, apart_description, price, finish]
+                         communication, apart_description, price]
     list_create_text = ['Схема_квартиры', 'Изображения', 'Идентификатор_инфраструктуры',
                         'Идентификатор_парадной', 'Идентификатор_этажа', 'Вид_квартиры',
                         'Технология', 'Статус_квартиры', 'Количество', 'Назначение', 'Состояние_квартиры', 'План',
                         'Площадь', 'Площадь_кухни', 'Балкон', 'Отопление', 'Оплата', 'Комиссия',
-                        'Связь', 'Описание_квартиры', 'Цена', 'Финиш']
+                        'Связь', 'Описание_квартиры', 'Цена']
 
     communication_list = ['Звонок', 'Сообщение', 'Звонок+Сообщение']
     view_apart_list = ['Вторичное жилье', 'Новострой', 'Коттедж']
