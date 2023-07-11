@@ -15,7 +15,7 @@ router = Router()
 @router.message(Command("start"))
 async def first_page_choose(message: Message, state: FSMContext):
     user_id = message.from_user.id
-    user_data = await Database.save_user(user_id=user_id, email=None, password=None, access_token=None, refresh_token=None)
+    user_data = await Database.save_user(user_id=user_id, email=None, access_token=None, refresh_token=None)
     # api = Api()
     # get_something = api.get_something(user_id, user_data.get('access_token'), user_data.get('refresh_token'), 'api/auth/user/')
 
@@ -228,7 +228,7 @@ async def process_registration(message: Message, state: FSMContext, db=None):
             reply_markup=make_row_keyboard(log_page)
         )
 
-        user_data = await Database.save_user(user_id=message.from_user.id, email=email, password=password1,
+        user_data = await Database.save_user(user_id=message.from_user.id, email=email,
                                              access_token=None, refresh_token=None)
         await state.set_state(RegPage.reg_or_auth)
 
@@ -307,7 +307,7 @@ async def log_pass_choosen(message: Message, state: FSMContext):
         print(data)
         access_token = data['access']
         refresh_token = data['refresh']
-        user_data = await Database.save_user(user_id=message.from_user.id, email=email, password=password,
+        user_data = await Database.save_user(user_id=message.from_user.id, email=email,
                                              access_token=access_token, refresh_token=refresh_token)
         await message.answer(
             text="Вход успешен",

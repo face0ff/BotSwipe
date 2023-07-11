@@ -16,7 +16,6 @@ router = Router()
 
 @router.message(F.text == 'Профиль')
 async def workspace(message: Message, state: FSMContext):
-
     await message.answer(
         text="Это ваш профиль",
         reply_markup=make_row_keyboard(list_profile)
@@ -27,7 +26,7 @@ async def workspace(message: Message, state: FSMContext):
 @router.message(F.text == 'Mой профиль')
 async def profile(message: Message, state: FSMContext):
     user_id = message.from_user.id
-    user_data = await Database.save_user(user_id=user_id, email=None, password=None, access_token=None,
+    user_data = await Database.save_user(user_id=user_id, email=None, access_token=None,
                                          refresh_token=None)
     api = Api()
     get_something = await api.get_something(user_id, user_data.get('access_token'), user_data.get('refresh_token'),
@@ -48,10 +47,11 @@ async def profile(message: Message, state: FSMContext):
         )
         await start_reg(message, state)
 
+
 @router.message(F.text == 'Мои обьявления')
 async def annoncement(message: Message, state: FSMContext):
     user_id = message.from_user.id
-    user_data = await Database.save_user(user_id=user_id, email=None, password=None, access_token=None,
+    user_data = await Database.save_user(user_id=user_id, email=None, access_token=None,
                                          refresh_token=None)
 
     api = Api()
@@ -83,24 +83,26 @@ async def annoncement(message: Message, state: FSMContext):
         )
     else:
         await message.answer(
-            text='Refresh токен все, предеться вводить пароль',
-            reply_markup=make_row_keyboard(log_page)
+            text='Скорее всего обьялений нет',
+            reply_markup=make_row_keyboard(list_profile)
         )
-        await start_reg(message, state)
+
+
+
 @router.message(WorkPage.announcement_view)
 @router.message(F.text == 'Обьявления')
 async def annoncement_view(message: Message, state: FSMContext):
+
+    if message.text == 'Обьявления':
+        await state.update_data(iterator=None)
     data = await state.get_data()
     if data.get('user_id'):
         user_id = data.get('user_id')
     else:
         user_id = message.from_user.id
     await state.update_data(user_id=user_id)
-    # print(user_id)
-    user_data = await Database.save_user(user_id=user_id, email=None, password=None, access_token=None,
+    user_data = await Database.save_user(user_id=user_id, email=None, access_token=None,
                                          refresh_token=None)
-    print('1111111111111111')
-    print(user_data)
     api = Api()
     get_something = await api.get_something(user_id, user_data.get('access_token'), user_data.get('refresh_token'),
                                             'api/v1/apartment/')
@@ -117,10 +119,14 @@ async def annoncement_view(message: Message, state: FSMContext):
         callback_data=ChangeFilter(text="geo").pack())
     )
 
-
-    if get_something:
+    if get_something['results']:
         queryset = get_something['results']
         query_list = [i for i in range(0, len(queryset))]
+
+        await message.answer(
+            text='Нет ни одного объявления',
+            reply_markup=make_row_keyboard(list_profile)
+        )
         await state.update_data(max=max(query_list))
         data = await state.get_data()
         if data.get('iterator') == 0:
@@ -133,33 +139,45 @@ async def annoncement_view(message: Message, state: FSMContext):
         except:
             image = 'https://netsh.pp.ua/wp-content/uploads/2017/08/Placeholder-1.png'
         image_url = image
+        if data.get('iterator') == None:
+            test = await message.answer_photo(
+                photo=image_url,
+                caption=
+                f"Это последнее объявление\n"
+                f"ЖК: {queryset[i]['infrastructure_id']}\n"
+                f"Этаж: {queryset[i]['floor_id']['number']}\n"
+                f"Парадная: {queryset[i]['riser_id']['number']}\n",
+                reply_markup=annoncement_buttons.as_markup()
+            )
+        else:
 
-        await message.answer_photo(
-            photo=image_url,
-            caption=
-            f"Это последнее объявление\n"
-            f"ЖК: {queryset[i]['infrastructure_id']}\n"
-            f"Этаж: {queryset[i]['floor_id']['number']}\n"
-            f"Парадная: {queryset[i]['riser_id']['number']}\n",
-            reply_markup=annoncement_buttons.as_markup()
-        )
-
-        await message.answer(
-            text=">>>",
-            reply_markup=make_row_keyboard(second_page),
-        )
+            updated_photo_message = await message.edit_media(
+                media=types.InputMediaPhoto(
+                    media=image_url
+                )
+            )
+            update_caption = await message.edit_caption(
+                caption=
+                f"Это последнее объявление\n"
+                f"ЖК: {queryset[i]['infrastructure_id']}\n"
+                f"Этаж: {queryset[i]['floor_id']['number']}\n"
+                f"Парадная: {queryset[i]['riser_id']['number']}\n",
+                reply_markup=annoncement_buttons.as_markup()
+            )
     else:
         await message.answer(
-            text='Refresh токен все, предеться вводить пароль',
-            reply_markup=make_row_keyboard(log_page)
+        text = 'Нет записей в базе',
+        reply_markup = make_row_keyboard(second_page)
+
         )
-        await start_reg(message, state)
+        # await start_reg(message, state)
 
-
-@router.callback_query(ChangeFilter.filter(F.text == "geo"))
+@ router.callback_query(ChangeFilter.filter(F.text == "geo"))
 async def show_location_callback(query: types.CallbackQuery):
-    # Отправка геолокации в ответ на нажатие кнопки
+# Отправка геолокации в ответ на нажатие кнопки
     await query.message.answer_location(latitude=51.5074, longitude=-0.1278)
+
+
 
 
 @router.callback_query(ChangeFilter.filter(F.text == "prev_annoncement"))
@@ -173,7 +191,6 @@ async def prev_annoncement(callback_query: CallbackQuery, state: FSMContext):
     await annoncement_view(callback_query.message, state)
 
 
-
 @router.callback_query(ChangeFilter.filter(F.text == "next_annoncement"))
 async def next_annoncement(callback_query: CallbackQuery, state: FSMContext):
     data = await state.get_data()
@@ -183,4 +200,3 @@ async def next_annoncement(callback_query: CallbackQuery, state: FSMContext):
         i += 1
         await state.update_data(iterator=i)
         await annoncement_view(callback_query.message, state)
-

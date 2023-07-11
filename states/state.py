@@ -2,7 +2,7 @@ from aiogram.fsm.state import StatesGroup, State
 
 prev_and_cancel = ["Назад", "Отмена"]
 prev_cancel_done = ["Назад", "Отмена", 'Подтвердить']
-cancel_done = ["Отмена", 'Подтвердить']
+cancel_edit_done = ["Отмена", "Изменить", 'Подтвердить']
 reg_page = ["Вход", "Регистрация"]
 log_page = ["Вход"]
 second_page = ["Обьявления", "Создание", "Профиль", "Язык"]
@@ -60,6 +60,7 @@ class CreatePage(StatesGroup):
     apart_description = State()
     price = State()
     finish = State()
+    edit = State()
 
     list_create_state = [schema_apart, image_places, infrastructure_id, riser_id, floor_id, view_apart,
                          technology, apart_status, quantity, appointment, state_apart, plane,

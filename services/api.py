@@ -8,7 +8,7 @@ from settings.database import Database
 
 class Api:
     def __init__(self):
-        self.base_url = 'https://2914-31-16-251-190.ngrok-free.app/'
+        self.base_url = 'https://a884-95-223-184-103.ngrok-free.app/'
 
     def registration(self, email, password1, password2):
         endpoint = 'api/v1/user_register/'
@@ -76,7 +76,7 @@ class Api:
                             data = await refresh_response.json()
                             access_token = data['access']
                             refresh_token = data['refresh']
-                            await Database.save_user(user_id=user_id, email=None, password=None,
+                            await Database.save_user(user_id=user_id, email=None,
                                                      access_token=access_token, refresh_token=refresh_token)
 
                             await self.get_something(user_id, access_token, refresh_token, endpoint)

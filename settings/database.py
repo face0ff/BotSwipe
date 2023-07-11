@@ -13,7 +13,7 @@ async def create_redis_connection():
 async def save_data_to_redis(key, value):
     redis = await create_redis_connection()
     print(key, value)
-    await redis.set(key, value)
+    await redis.set(str(key), str(value))
     await redis.close()
 
 
@@ -48,7 +48,7 @@ class Database:
     def get_database(cls):
         return cls.client[cls.database_name]
 
-    async def save_user(user_id, email, password, refresh_token, access_token):
+    async def save_user(user_id, email, refresh_token, access_token):
         client = await Database.connect()
         db = client.users
 
@@ -58,8 +58,6 @@ class Database:
             # Пользователь найден, обновляем email и password
             if email:
                 user_data['email'] = email
-            if password:
-                user_data['password'] = password
             if refresh_token:
                 user_data['refresh_token'] = refresh_token
             if access_token:
@@ -72,7 +70,6 @@ class Database:
                 'refresh_token': refresh_token,
                 'access_token': access_token,
                 'email': email,
-                'password': password,
             }
             await db.users.insert_one(user_data)
 
