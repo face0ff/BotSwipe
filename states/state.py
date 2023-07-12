@@ -39,7 +39,7 @@ class WorkPage(StatesGroup):
 
 class CreatePage(StatesGroup):
     schema_apart = State()
-    image_places = State()
+    images = State()
     infrastructure_id = State()
     riser_id = State()
     floor_id = State()
@@ -57,20 +57,20 @@ class CreatePage(StatesGroup):
     payment = State()
     commission = State()
     communication = State()
-    apart_description = State()
     price = State()
+    location = State()
     finish = State()
     edit = State()
 
-    list_create_state = [schema_apart, image_places, infrastructure_id, riser_id, floor_id, view_apart,
+    list_create_state = [schema_apart, images, infrastructure_id, riser_id, floor_id, view_apart,
                          technology, apart_status, quantity, appointment, state_apart, plane,
                          area, kitchen_area, balcony, heating, payment, commission,
-                         communication, apart_description, price]
+                         communication, price]
     list_create_text = ['Схема_квартиры', 'Изображения', 'Идентификатор_инфраструктуры',
                         'Идентификатор_парадной', 'Идентификатор_этажа', 'Вид_квартиры',
                         'Технология', 'Статус_квартиры', 'Количество', 'Назначение', 'Состояние_квартиры', 'План',
                         'Площадь', 'Площадь_кухни', 'Балкон', 'Отопление', 'Оплата', 'Комиссия',
-                        'Связь', 'Описание_квартиры', 'Цена']
+                        'Связь', 'Цена', 'Адрес']
 
     communication_list = ['Звонок', 'Сообщение', 'Звонок+Сообщение']
     view_apart_list = ['Вторичное жилье', 'Новострой', 'Коттедж']

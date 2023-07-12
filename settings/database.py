@@ -2,6 +2,7 @@ import motor.motor_asyncio
 from redis.asyncio.client import Redis
 
 from settings.config import config
+from states.state import CreatePage
 
 
 # Создание подключения к Redis
@@ -16,12 +17,18 @@ async def save_data_to_redis(key, value):
     await redis.set(str(key), str(value))
     await redis.close()
 
+async def save_apart_to_redis(key, value):
+    redis = await create_redis_connection()
+    print(key, value)
+    await redis.set(str(key), value)
+    await redis.close()
+
 
 async def get_data_from_redis(key):
     redis = await create_redis_connection()
     value = await redis.get(key)
     await redis.close()
-    return value
+    return value.decode()
 
 async def get_alldata_from_redis(state_list):
 
@@ -29,8 +36,10 @@ async def get_alldata_from_redis(state_list):
     data = {}
     for state in state_list:
         value = await redis.get(str(state))
-        data[state] = value.decode()
-
+        if data[state] == CreatePage.schema_apart or data[state] == CreatePage.images:
+            data[state] = value
+        else:
+            data[state] = value.decode()
     await redis.close()
     return data
 

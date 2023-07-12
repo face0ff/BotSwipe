@@ -302,6 +302,7 @@ async def log_pass_choosen(message: Message, state: FSMContext):
     password = user_data['log_pass']
     api = Api()
     authorization = api.authorization(email, password)
+    print(authorization)
     if authorization is not False:
         data = authorization.json()
         print(data)
@@ -315,3 +316,5 @@ async def log_pass_choosen(message: Message, state: FSMContext):
         )
 
         await state.set_state(WorkPage.workspace)
+    else:
+        print("Чтото пошло не так")
