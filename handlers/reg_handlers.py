@@ -7,13 +7,16 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from keyboards.reply_row import make_row_keyboard
 from services.api import Api
 from services.filters import ChangeFilter
-from settings.database import Database, get_data_from_redis
+from settings.database import Database, get_data_from_redis, save_apart_to_redis
 from states.state import *
+from aiogram.utils.i18n import gettext as _
+from aiogram.utils.i18n import lazy_gettext as __
 
 router = Router()
 
 @router.message(Command("start"))
 async def first_page_choose(message: Message, state: FSMContext):
+    await save_apart_to_redis('prev_state', 'None')
     user_id = message.from_user.id
     user_data = await Database.save_user(user_id=user_id, email=None, access_token=None, refresh_token=None)
     # api = Api()
@@ -21,11 +24,11 @@ async def first_page_choose(message: Message, state: FSMContext):
 
 
     if user_data and user_data.get('refresh_token'):
-        await message.answer('Вы в базе есть', reply_markup=make_row_keyboard(second_page))
+        await message.answer(_('Вы в базе есть'), reply_markup=make_row_keyboard(second_page if await get_data_from_redis('lang') == 'ru' else second_page_en))
         await state.set_state(WorkPage.workspace)
 
     else:
-        await message.answer('Вас не найдено, надо регистрироваться', reply_markup=make_row_keyboard(reg_page))
+        await message.answer(_('Вас не найдено, надо регистрироваться'), reply_markup=make_row_keyboard(reg_page if await get_data_from_redis('lang') == 'ru' else reg_page_en))
         await state.set_state(RegPage.reg_or_auth)
 
 
@@ -35,19 +38,21 @@ async def first_page_choose(message: Message, state: FSMContext):
 @router.message(RegPage.reg_or_auth, F.text == 'Регистрация')
 async def start_reg(message: Message, state: FSMContext):
     await message.answer(
-        text="Даваи попробуем зарегаться, введи имейл",
-        reply_markup=make_row_keyboard(prev_and_cancel)
+        text=_("Даваи попробуем зарегаться, введи имейл"),
+        reply_markup=make_row_keyboard(prev_and_cancel if await get_data_from_redis('lang') == 'ru' else prev_and_cancel_en)
     )
     await state.set_state(RegPage.list_reg_state[0])
+
 
 @router.message(RegPage.reg_or_auth, F.text == 'Вход')
 async def start_reg(message: Message, state: FSMContext):
     await message.answer(
-        text="Введите имейл",
-        reply_markup=make_row_keyboard(prev_and_cancel)
+        text=_("Введите имейл"),
+        reply_markup=make_row_keyboard(prev_and_cancel if await get_data_from_redis('lang') == 'ru' else prev_and_cancel_en)
     )
     await state.set_state(RegPage.list_log_state[0])
 
+@router.message(F.text == 'Back')
 @router.message(F.text == 'Назад')
 async def reg_prev(message: Message, state: FSMContext):
     user_data = await state.get_data()
@@ -60,8 +65,8 @@ async def reg_prev(message: Message, state: FSMContext):
         index = WorkPage.list_workspace_state.index(curr_state)
         print(index)
         await message.answer(
-            text="На главную",
-            reply_markup=make_row_keyboard(second_page)
+            text=_("На главную"),
+            reply_markup=make_row_keyboard(second_page if await get_data_from_redis('lang') == 'ru' else second_page_en)
         )
         if index == 3 or 0:
             await state.set_state(WorkPage.list_workspace_state[0])
@@ -71,14 +76,14 @@ async def reg_prev(message: Message, state: FSMContext):
         index = CreatePage.list_create_state.index(curr_state)
         if index == 0:
             await message.answer(
-                text="Главная",
-                reply_markup=make_row_keyboard(second_page)
+                text=_("Главная"),
+                reply_markup=make_row_keyboard(second_page if await get_data_from_redis('lang') == 'ru' else second_page_en)
             )
             await state.set_state(WorkPage.workspace)
         else:
             await message.answer(
-                text=f"Выберите {CreatePage.list_create_text[index-1]}",
-                reply_markup=make_row_keyboard(prev_and_cancel)
+                text=_("Выберите {state}").format(state=CreatePage.list_create_text[index-1]),
+                reply_markup=make_row_keyboard(prev_and_cancel if await get_data_from_redis('lang') == 'ru' else prev_and_cancel_en)
             )
             await state.set_state(CreatePage.list_create_state[index-1])
 
@@ -86,7 +91,7 @@ async def reg_prev(message: Message, state: FSMContext):
     elif curr_state not in RegPage.list_reg_state or curr_state == RegPage.list_reg_state[0]:
         # prev = await state.get_data()
         await message.answer(
-            text="Шо опять!",
+            text=_("Шо опять!"),
             reply_markup=make_row_keyboard(reg_page)
         )
         await state.set_state(RegPage.reg_or_auth)
@@ -96,56 +101,56 @@ async def reg_prev(message: Message, state: FSMContext):
         prev = await state.get_data()
         await message.answer(
             text=RegPage.list_reg_text[index - 1],
-            reply_markup=make_row_keyboard(prev_and_cancel)
+            reply_markup=make_row_keyboard(prev_and_cancel if await get_data_from_redis('lang') == 'ru' else prev_and_cancel_en)
         )
         await state.set_state(RegPage.list_reg_state[index - 1])
-
+@router.message(F.text == 'Cancel')
 @router.message(F.text == 'Отмена')
 async def reg_cancel(message: Message, state: FSMContext):
     curr_state = await state.get_state()
     if curr_state in WorkPage.list_workspace_state or curr_state in CreatePage.list_create_state:
         await state.clear()
         await message.answer(
-            text="И куда вас это привело. Снова ко мне!",
-            reply_markup=make_row_keyboard(second_page)
+            text=_("И куда вас это привело. Снова ко мне!"),
+            reply_markup=make_row_keyboard(second_page if await get_data_from_redis('lang') == 'ru' else second_page_en)
         )
         await state.set_state(WorkPage.workspace)
     else:
         await state.clear()
         await message.answer(
-            text="И куда вас это привело. Снова ко мне!",
-            reply_markup=make_row_keyboard(reg_page)
+            text=_("И куда вас это привело. Снова ко мне!"),
+            reply_markup=make_row_keyboard(reg_page if await get_data_from_redis('lang') == 'ru' else reg_page_en)
         )
         await state.set_state(RegPage.reg_or_auth)
 
 @router.message(RegPage.reg_or_auth)
 async def choosen_incorrectly(message: Message):
     await message.answer(
-        text="Или регистрация или смерть",
-        reply_markup=make_row_keyboard(reg_page)
+        text=_("Или регистрация или смерть"),
+        reply_markup=make_row_keyboard(reg_page if await get_data_from_redis('lang') == 'ru' else reg_page_en)
     )
 
 
 @router.message(RegPage.reg_email)
 async def reg_email_choosen(message: Message, state: FSMContext):
-    current_text = "Введи имейл"
+    current_text = _("Введи имейл")
     await state.update_data(text=current_text)
     await state.update_data(reg_email=message.text)
     await message.answer(
-        text="Введи пароль",
-        reply_markup=make_row_keyboard(prev_and_cancel)
+        text=_("Введи пароль"),
+        reply_markup=make_row_keyboard(prev_and_cancel if await get_data_from_redis('lang') == 'ru' else prev_and_cancel_en)
     )
     await state.set_state(RegPage.reg_pass1)
 
 
 @router.message(RegPage.reg_pass1)
 async def reg_pass1_choosen(message: Message, state: FSMContext):
-    current_text = "Введи пароль"
+    current_text = _("Введи пароль")
     await state.update_data(text=current_text)
     await state.update_data(reg_pass1=message.text)
     await message.answer(
-        text="Повторите пароль",
-        reply_markup=make_row_keyboard(prev_and_cancel)
+        text=_("Повторите пароль"),
+        reply_markup=make_row_keyboard(prev_and_cancel if await get_data_from_redis('lang') == 'ru' else prev_and_cancel_en)
     )
     await state.set_state(RegPage.reg_pass2)
 
@@ -154,9 +159,9 @@ async def reg_pass1_choosen(message: Message, state: FSMContext):
 async def reg_pass2_chosen(message: Message, state: FSMContext):
 
     print(await state.get_state())
-    current_text = "Повторите пароль"
+    current_text = _("Повторите пароль")
     await state.update_data(text=current_text)
-    if message.text != 'Подтвердить':
+    if message.text != _('Подтвердить'):
         user_data = await state.get_data()
         callback = user_data.get('callback')
         if callback == 'email':
@@ -178,36 +183,36 @@ async def reg_pass2_chosen(message: Message, state: FSMContext):
 
     change_email = InlineKeyboardBuilder()
     change_email.add(types.InlineKeyboardButton(
-        text="Изменить имейл",
+        text=_("Изменить имейл"),
         callback_data=ChangeFilter(text="change_email").pack())
     )
     change_pass1 = InlineKeyboardBuilder()
     change_pass1.add(types.InlineKeyboardButton(
-        text="Изменить пароль",
+        text=_("Изменить пароль"),
         callback_data=ChangeFilter(text="change_pass1").pack())
     )
     change_pass2 = InlineKeyboardBuilder()
     change_pass2.add(types.InlineKeyboardButton(
-        text="Изменить пароль",
+        text=_("Изменить пароль"),
         callback_data=ChangeFilter(text="change_pass2").pack())
     )
 
     await message.answer(
-        text=f"Вы пытаетесь зарегаться под этими данными:\n"
-             f"Имейл: {email}\n",
+        text=_("Вы пытаетесь зарегаться под этими данными:\n"
+             "Имейл: {email}\n").format(email=email),
         reply_markup=change_email.as_markup(),
     )
     await message.answer(
-        text=f"Пароль: {password1}\n",
+        text=_("Пароль: {password1}\n").format(password1=password1),
         reply_markup=change_pass1.as_markup(),
     )
     await message.answer(
-        text=f"Повторный пароль: {password2}",
+        text=_("Повторный пароль: {password2}").format(password2=password2),
         reply_markup=change_pass2.as_markup(),
     )
     await message.answer(
-        text='Для регистрации нажминте подтвердить',
-        reply_markup=make_row_keyboard(prev_cancel_done)
+        text=_('Для регистрации нажминте подтвердить'),
+        reply_markup=make_row_keyboard(prev_and_cancel if await get_data_from_redis('lang') == 'ru' else prev_and_cancel_en)
     )
     if message.text == 'Подтвердить':
         await process_registration(message, state)
@@ -224,8 +229,8 @@ async def process_registration(message: Message, state: FSMContext, db=None):
 
     if registration_result is True:
         await message.answer(
-            text=f"Вы зарегистрировались ваш имейл - {user_data['reg_email']}, подтвердите имейл на почте.",
-            reply_markup=make_row_keyboard(log_page)
+            text=_("Вы зарегистрировались ваш имейл - {user_data}, подтвердите имейл на почте.").format(user_data=user_data['reg_email']),
+            reply_markup=make_row_keyboard(log_page if await get_data_from_redis('lang') == 'ru' else log_page_en)
         )
 
         user_data = await Database.save_user(user_id=message.from_user.id, email=email,
@@ -234,20 +239,20 @@ async def process_registration(message: Message, state: FSMContext, db=None):
 
     elif registration_result == 'email':
         await message.answer(
-            text=f"Ошибочка вышла, имейл не прошел валидацию",
-            reply_markup=make_row_keyboard(prev_and_cancel)
+            text=_("Ошибочка вышла, имейл не прошел валидацию"),
+            reply_markup=make_row_keyboard(prev_and_cancel if await get_data_from_redis('lang') == 'ru' else prev_and_cancel_en)
         )
         await state.set_state(RegPage.reg_final)
     elif registration_result == 'pass':
         await message.answer(
-            text=f"Ошибочка вышла, Пароль не прошел валидацию",
-            reply_markup=make_row_keyboard(prev_and_cancel)
+            text=_("Ошибочка вышла, такой имейл уже есть в базе"),
+            reply_markup=make_row_keyboard(prev_and_cancel if await get_data_from_redis('lang') == 'ru' else prev_and_cancel_en)
         )
         await state.set_state(RegPage.reg_final)
     else:
         await message.answer(
-            text=f"Ошибочка вышла, такой имейл уже есть в базе",
-            reply_markup=make_row_keyboard(prev_and_cancel)
+            text=_("Ошибочка вышла, такой имейл уже есть в базе"),
+            reply_markup=make_row_keyboard(prev_and_cancel if await get_data_from_redis('lang') == 'ru' else prev_and_cancel_en)
         )
         await state.set_state(RegPage.reg_final)
 
@@ -258,43 +263,43 @@ async def process_registration(message: Message, state: FSMContext, db=None):
 async def change_email(callback_query: CallbackQuery, state: FSMContext):
     await state.update_data(callback='email')
     await callback_query.answer()
-    await callback_query.message.answer("Введите новый имейл")
+    await callback_query.message.answer(_("Введите новый имейл"))
     await state.set_state(RegPage.reg_pass2)
 
 @router.callback_query(ChangeFilter.filter(F.text == "change_pass1"))
 async def change_pass1(callback_query: CallbackQuery, state: FSMContext):
     await state.update_data(callback='pass1')
     await callback_query.answer()
-    await callback_query.message.answer("Введите новый пароль")
+    await callback_query.message.answer(_("Введите новый пароль"))
     await state.set_state(RegPage.reg_pass2)
 
 @router.callback_query(ChangeFilter.filter(F.text == "change_pass2"))
 async def change_pass2(callback_query: CallbackQuery, state: FSMContext):
     await state.update_data(callback='pass2')
     await callback_query.answer()
-    await callback_query.message.answer("Подтвердите новый пароль")
+    await callback_query.message.answer(_("Подтвердите новый пароль"))
     await state.set_state(RegPage.reg_pass2)
 
 
 @router.message(RegPage.log_email)
 async def log_email_choosen(message: Message, state: FSMContext):
-    current_text = "Введи имейл"
+    current_text = _("Введи имейл")
     await state.update_data(text=current_text)
     await state.update_data(log_email=message.text)
     await message.answer(
-        text="Введите пароль",
-        reply_markup=make_row_keyboard(prev_and_cancel)
+        text=_("Введите пароль"),
+        reply_markup=make_row_keyboard(prev_and_cancel if await get_data_from_redis('lang') == 'ru' else prev_and_cancel_en)
     )
     await state.set_state(RegPage.log_pass)
 
 @router.message(RegPage.log_pass)
 async def log_pass_choosen(message: Message, state: FSMContext):
-    current_text = "Введите пароль"
+    current_text = _("Введите пароль")
     await state.update_data(text=current_text)
     await state.update_data(log_pass=message.text)
     await message.answer(
         text="Вход",
-        reply_markup=make_row_keyboard(log_page)
+        reply_markup=make_row_keyboard(log_page if await get_data_from_redis('lang') == 'ru' else log_page_en)
     )
 
     user_data = await state.get_data()
@@ -311,8 +316,8 @@ async def log_pass_choosen(message: Message, state: FSMContext):
         user_data = await Database.save_user(user_id=message.from_user.id, email=email,
                                              access_token=access_token, refresh_token=refresh_token)
         await message.answer(
-            text="Вход успешен",
-            reply_markup=make_row_keyboard(second_page)
+            text=_("Вход успешен"),
+            reply_markup=make_row_keyboard(second_page if await get_data_from_redis('lang') == 'ru' else second_page_en)
         )
 
         await state.set_state(WorkPage.workspace)
