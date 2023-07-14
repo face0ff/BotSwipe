@@ -26,6 +26,8 @@ async def save_photo(photo):
     bot = Bot(token=config.bot_token.get_secret_value())
     photo_file_id = photo.file_id
     photo_file = await bot.get_file(photo_file_id)
+    # photo_data = await bot.download_file(photo_file)
+
 
     file_url = f"https://api.telegram.org/file/bot{config.bot_token.get_secret_value()}/{photo_file.file_path}"
 

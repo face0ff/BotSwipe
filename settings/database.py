@@ -36,10 +36,16 @@ async def get_alldata_from_redis(state_list):
     data = {}
     for state in state_list:
         value = await redis.get(str(state))
-        if data[state] == CreatePage.schema_apart or data[state] == CreatePage.images:
-            data[state] = value
-        else:
+        try:
             data[state] = value.decode()
+        except:
+            data[state] = value
+            # if str(state) == 'schema_apart':
+            #     data[state] = value
+            # elif str(state) == 'images':
+            #     data[state] = [value]
+            # else:
+            #     data[state] = value.decode()
     await redis.close()
     return data
 

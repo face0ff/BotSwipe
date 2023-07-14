@@ -1,3 +1,5 @@
+import io
+
 from aiogram import Router, F, types
 from aiogram.client.session import aiohttp
 from aiogram.filters import Command
@@ -52,33 +54,35 @@ async def apart_edit(message: Message, state: FSMContext):
         state_list = [str(state).split("'")[1].split(':')[1] for state in CreatePage.list_create_state]
         data = await get_alldata_from_redis(state_list)
         address = await get_data_from_redis('location')
-        print(data)
-        print(data['schema_apart'])
+        # print(data['images'])
+
+        image_file = io.BytesIO(data['images'])
+        schema_apart = io.BytesIO(data['schema_apart'])
 
 
         form_data = aiohttp.FormData()
-        form_data.add_field('user_id', user_id)
-        form_data.add_field('images', data['images'])
-        form_data.add_field('schema', data['schema_apart'])
-        form_data.add_field('infrastructure_id', data['infrastructure_id'])
-        form_data.add_field('riser_id', data['riser_id'])
-        form_data.add_field('floor_id', data['floor_id'])
-        form_data.add_field('view', data['view_apart'])
-        form_data.add_field('technology', data['technology'])
-        form_data.add_field('apart_status', data['apart_status'])
-        form_data.add_field('quantity', data['quantity'])
-        form_data.add_field('appointment', data['appointment'])
-        form_data.add_field('state', data['state_apart'])
-        form_data.add_field('plane', data['plane'])
-        form_data.add_field('area', data['area'])
-        form_data.add_field('kitchen_area', data['kitchen_area'])
-        form_data.add_field('balcony', data['balcony'])
-        form_data.add_field('heating', data['heating'])
-        form_data.add_field('payment', data['payment'])
-        form_data.add_field('communication', data['communication'])
-        form_data.add_field('commission', data['commission'])
-        form_data.add_field('apart_description', address)
-        form_data.add_field('price', data['price'])
+        # form_data.add_field('user_id', str(user_id))
+        form_data.add_field('images', image_file, filename='image.jpg', content_type='image/jpeg')
+        form_data.add_field('schema', schema_apart, filename='image.jpg', content_type='image/jpeg')
+        form_data.add_field('infrastructure_id', str(data['infrastructure_id']))
+        form_data.add_field('riser_id', str(data['riser_id']))
+        form_data.add_field('floor_id', str(data['floor_id']))
+        # form_data.add_field('view', str(data['view_apart']))
+        # form_data.add_field('technology', str(data['technology']))
+        # form_data.add_field('apart_status', str(data['apart_status']))
+        # form_data.add_field('quantity', str(data['quantity']))
+        # form_data.add_field('appointment', str(data['appointment']))
+        # form_data.add_field('state', str(data['state_apart']))
+        # form_data.add_field('plane', str(data['plane']))
+        # form_data.add_field('area', str(data['area']))
+        # form_data.add_field('kitchen_area', str(data['kitchen_area']))
+        # form_data.add_field('balcony', str(data['balcony']))
+        # form_data.add_field('heating', str(data['heating']))
+        # form_data.add_field('payment', str(data['payment']))
+        # form_data.add_field('communication', str(data['communication']))
+        # form_data.add_field('commission', str(data['commission']))
+        # form_data.add_field('apart_description', str(address))
+        # form_data.add_field('price', str(data['price']))
 
         await api.save_something(user_id, user_data.get('access_token'), user_data.get('refresh_token'),
                                             'api/v1/apartment/', form_data)
@@ -207,19 +211,19 @@ async def finish(message: Message, state: FSMContext):
         f"ЖК: {data['infrastructure_id']}\n"
         f"Этаж: {data['floor_id']}\n"
         f"Парадная: {data['riser_id']}\n"
-        f"Комнаты: {data['quantity']}\n"
-        f"Вид: {data['view_apart']}\n"
-        f"Назначение: {data['appointment']}\n"
-        f"Стейт: {data['apart_status']}\n"
-        f"План: {data['plane']}\n"
-        f"Площадь: {data['area']}\n"
-        f"Кухня: {data['kitchen_area']}\n"
-        f"Балкон: {data['balcony']}\n"
-        f"Отопление: {data['heating']}\n"
-        f"Платеж: {data['payment']}\n"
-        f"Комиссия: {data['commission']}\n"
-        f"Коммуникации: {data['communication']}\n"
-        f"Цена: {data['price']}\n"
+        # f"Комнаты: {data['quantity']}\n"
+        # f"Вид: {data['view_apart']}\n"
+        # f"Назначение: {data['appointment']}\n"
+        # f"Стейт: {data['apart_status']}\n"
+        # f"План: {data['plane']}\n"
+        # f"Площадь: {data['area']}\n"
+        # f"Кухня: {data['kitchen_area']}\n"
+        # f"Балкон: {data['balcony']}\n"
+        # f"Отопление: {data['heating']}\n"
+        # f"Платеж: {data['payment']}\n"
+        # f"Комиссия: {data['commission']}\n"
+        # f"Коммуникации: {data['communication']}\n"
+        # f"Цена: {data['price']}\n"
         # f"Схема: {data['schema_apart']}\n"
         f"Локация: {address}\n"
     )

@@ -220,7 +220,7 @@ async def process_registration(message: Message, state: FSMContext, db=None):
     password2 = user_data['reg_pass2']
 
     api = Api()
-    registration_result = api.registration(email, password1, password2)
+    registration_result = await api.registration(email, password1, password2)
 
     if registration_result is True:
         await message.answer(
@@ -301,11 +301,11 @@ async def log_pass_choosen(message: Message, state: FSMContext):
     email = user_data['log_email']
     password = user_data['log_pass']
     api = Api()
-    authorization = api.authorization(email, password)
-    print(authorization)
-    if authorization is not False:
-        data = authorization.json()
-        print(data)
+    data = await api.authorization(email, password)
+    print('1212121212121212121212')
+    print(data)
+    if data is not False:
+
         access_token = data['access']
         refresh_token = data['refresh']
         user_data = await Database.save_user(user_id=message.from_user.id, email=email,

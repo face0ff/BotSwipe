@@ -62,15 +62,19 @@ class CreatePage(StatesGroup):
     finish = State()
     edit = State()
 
-    list_create_state = [schema_apart, images, infrastructure_id, riser_id, floor_id, view_apart,
-                         technology, apart_status, quantity, appointment, state_apart, plane,
-                         area, kitchen_area, balcony, heating, payment, commission,
-                         communication, price]
+    list_create_state = [schema_apart, images, infrastructure_id, riser_id, floor_id, ]
     list_create_text = ['Схема_квартиры', 'Изображения', 'Идентификатор_инфраструктуры',
-                        'Идентификатор_парадной', 'Идентификатор_этажа', 'Вид_квартиры',
-                        'Технология', 'Статус_квартиры', 'Количество', 'Назначение', 'Состояние_квартиры', 'План',
-                        'Площадь', 'Площадь_кухни', 'Балкон', 'Отопление', 'Оплата', 'Комиссия',
-                        'Связь', 'Цена', 'Адрес']
+                        'Идентификатор_парадной', 'Идентификатор_этажа']
+
+    # list_create_state = [schema_apart, images, infrastructure_id, riser_id, floor_id, view_apart,
+    #                      technology, apart_status, quantity, appointment, state_apart, plane,
+    #                      area, kitchen_area, balcony, heating, payment, commission,
+    #                      communication, price]
+    # list_create_text = ['Схема_квартиры', 'Изображения', 'Идентификатор_инфраструктуры',
+    #                     'Идентификатор_парадной', 'Идентификатор_этажа', 'Вид_квартиры',
+    #                     'Технология', 'Статус_квартиры', 'Количество', 'Назначение', 'Состояние_квартиры', 'План',
+    #                     'Площадь', 'Площадь_кухни', 'Балкон', 'Отопление', 'Оплата', 'Комиссия',
+    #                     'Связь', 'Цена', 'Адрес']
 
     communication_list = ['Звонок', 'Сообщение', 'Звонок+Сообщение']
     view_apart_list = ['Вторичное жилье', 'Новострой', 'Коттедж']
