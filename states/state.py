@@ -76,27 +76,29 @@ class CreatePage(StatesGroup):
     location = State()
     finish = State()
     edit = State()
+    image_places = State()
 
-    list_create_state = [schema_apart, images, infrastructure_id, riser_id, floor_id, ]
-    list_create_text = ['Схема_квартиры', 'Изображения', 'Идентификатор_инфраструктуры',
-                        'Идентификатор_парадной', 'Идентификатор_этажа']
-    list_create_text_en = ['Floor_plan', 'Images', 'Infrastructure_id', 'Staircase_id', 'Floor_id']
 
-    # list_create_state = [schema_apart, images, infrastructure_id, riser_id, floor_id, view_apart,
-    #                      technology, apart_status, quantity, appointment, state_apart, plane,
-    #                      area, kitchen_area, balcony, heating, payment, commission,
-    #                      communication, price]
-    # list_create_text = ['Схема_квартиры', 'Изображения', 'Идентификатор_инфраструктуры',
-    #                     'Идентификатор_парадной', 'Идентификатор_этажа', 'Вид_квартиры',
-    #                     'Технология', 'Статус_квартиры', 'Количество', 'Назначение', 'Состояние_квартиры', 'План',
-    #                     'Площадь', 'Площадь_кухни', 'Балкон', 'Отопление', 'Оплата', 'Комиссия',
-    #                     'Связь', 'Цена', 'Адрес']
-    # list_create_text_en = ['Apartment_Schema', 'Images', 'Infrastructure_ID',
-    #                        'Riser_ID', 'Floor_ID', 'Apartment_View',
-    #                        'Technology', 'Apartment_Status', 'Quantity', 'Appointment', 'Apartment_State',
-    #                        'Apartment_Plan',
-    #                        'Area', 'Kitchen_Area', 'Balcony', 'Heating', 'Payment', 'Commission',
-    #                        'Communication', 'Price', 'Address']
+    # list_create_state = [schema_apart, images, image_places, infrastructure_id, riser_id, floor_id, ]
+    # list_create_text = ['Схема_квартиры', 'Изображения', 'Размещение', 'Идентификатор_инфраструктуры',
+    #                     'Идентификатор_парадной', 'Идентификатор_этажа']
+    # list_create_text_en = ['Floor_plan', 'Images', 'Infrastructure_id', 'Staircase_id', 'Floor_id']
+
+    list_create_state = [schema_apart, images, image_places, infrastructure_id, riser_id, floor_id, view_apart,
+                         technology, apart_status, quantity, appointment, state_apart, plane,
+                         area, kitchen_area, balcony, heating, payment, commission,
+                         communication, price]
+    list_create_text = ['Схема_квартиры', 'Изображения','Размещение', 'Идентификатор_инфраструктуры',
+                        'Идентификатор_парадной', 'Идентификатор_этажа', 'Вид_квартиры',
+                        'Технология', 'Статус_квартиры', 'Количество', 'Назначение', 'Состояние_квартиры', 'План',
+                        'Площадь', 'Площадь_кухни', 'Балкон', 'Отопление', 'Оплата', 'Комиссия',
+                        'Связь', 'Цена', 'Адрес']
+    list_create_text_en = ['Apartment_Schema', 'Images', 'Place', 'Infrastructure_ID',
+                           'Riser_ID', 'Floor_ID', 'Apartment_View',
+                           'Technology', 'Apartment_Status', 'Quantity', 'Appointment', 'Apartment_State',
+                           'Apartment_Plan',
+                           'Area', 'Kitchen_Area', 'Balcony', 'Heating', 'Payment', 'Commission',
+                           'Communication', 'Price', 'Address']
 
     communication_list = ['Звонок', 'Сообщение', 'Звонок+Сообщение']
     view_apart_list = ['Вторичное жилье', 'Новострой', 'Коттедж']
@@ -108,7 +110,9 @@ class CreatePage(StatesGroup):
     balcony_list = ['Да', 'Нет']
     heating_list = ['Электрическое', 'Газовое']
     plane_list = ['Студия', 'Стандарт', 'Свободная', 'Пентхаус']
+    payment_list = ['Наличные', 'Мат. капитал', 'Ипотека', 'Военная ипотека', 'Неважно']
 
+    payment_list_en = ['cash', 'maternity', 'mortgage', 'military', 'not']
     communication_list_en = ['Call', 'Message', 'Call+Message']
     view_apart_list_en = ['Secondary Housing', 'New Building', 'Cottage']
     technology_list_en = ['Panel', 'Monolithic']

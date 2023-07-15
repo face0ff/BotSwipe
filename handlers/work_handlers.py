@@ -63,27 +63,29 @@ async def annoncement(message: Message, state: FSMContext):
 
     if get_something:
         print(get_something)
-        await message.answer_photo(
-            photo=get_something[0]['images'][0]['image'],
-            caption=
-            f"Это ваш профиль\n"
-            f"Этаж: {get_something[0]['floor_id']['number']}\n"
-            f"Парадная: {get_something[0]['riser_id']['number']}\n"
-            f"Вид: {get_something[0]['view']}\n"
-            f"Назначение: {get_something[0]['appointment']}\n"
-            f"Стейт: {get_something[0]['state']}\n"
-            f"План: {get_something[0]['plane']}\n"
-            f"Площадь: {get_something[0]['area']}\n"
-            f"Кухня: {get_something[0]['kitchen_area']}\n"
-            f"Балкон: {get_something[0]['balcony']}\n"
-            f"Отопление: {get_something[0]['heating']}\n"
-            f"Платеж: {get_something[0]['payment']}\n"
-            f"Комиссия: {get_something[0]['commission']}\n"
-            f"Комуникации: {get_something[0]['communication']}\n"
-            f"Цена: {get_something[0]['price']}\n"
-            f"Схема: {get_something[0]['schema']}\n",
-            reply_markup=make_row_keyboard(list_profile)
-        )
+        for i in range(0, len(get_something)):
+            await message.answer_photo(
+                photo='https://netsh.pp.ua/wp-content/uploads/2017/08/Placeholder-1.png' if len(get_something[i]['images']) == 0 else get_something[i]['images'][0]['image'],
+                caption=
+                f"Это ваш профиль\n"
+                f"Адрес: {get_something[i]['apart_description']}\n"
+                f"Этаж: {get_something[i]['floor_id']['number']}\n"
+                f"Парадная: {get_something[i]['riser_id']['number']}\n"
+                f"Вид: {get_something[i]['view']}\n"
+                f"Назначение: {get_something[i]['appointment']}\n"
+                f"Стейт: {get_something[i]['state']}\n"
+                f"План: {get_something[i]['plane']}\n"
+                f"Площадь: {get_something[i]['area']}\n"
+                f"Кухня: {get_something[i]['kitchen_area']}\n"
+                f"Балкон: {get_something[i]['balcony']}\n"
+                f"Отопление: {get_something[i]['heating']}\n"
+                f"Платеж: {get_something[i]['payment']}\n"
+                f"Комиссия: {get_something[i]['commission']}\n"
+                f"Комуникации: {get_something[i]['communication']}\n"
+                f"Цена: {get_something[i]['price']}\n"
+                f"Схема: {get_something[i]['schema']}\n",
+                reply_markup=make_row_keyboard(list_profile)
+            )
     else:
         await message.answer(
             text=_('Скорее всего обьялений нет'),

@@ -38,25 +38,9 @@ async def photo_url(photo):
     photo_file_url = await bot.get_file(photo_file_id)
     return photo_file_url.file_id
 
-
 async def save_photo(photo):
-    photo_file_id = photo.file_id
-    photo_file = await bot.get_file(photo_file_id)
-
-
-    file_url = f"https://api.telegram.org/file/bot{config.bot_token.get_secret_value()}/{photo_file.file_path}"
-
-    async with aiohttp.ClientSession() as session:
-        async with session.get(file_url) as response:
-            if response.status == 200:
-                file_content = await response.read()
-
-                # Теперь 'file_content' содержит содержимое файла в виде байтов
-                return file_content
-            else:
-                print('Ошибка при получении файла')
-                return None
-
+    photo_file = await bot.download(photo)
+    return photo_file
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)

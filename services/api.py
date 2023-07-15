@@ -53,7 +53,6 @@ class Api:
                 else:
                     return False
 
-
     async def auty(self, user_id, session, refresh_token):
         print('Token expired')
         refresh_endpoint = 'api/auth/token/refresh/'
@@ -73,11 +72,10 @@ class Api:
                 await Database.save_user(user_id=user_id, email=None,
                                          access_token=access_token, refresh_token=refresh_token)
 
-                return await refresh_response
-            elif refresh_response.status == 401:
+                return refresh_response
+            else:
                 print('Refresh request failed')
                 return False
-
 
     async def get_something(self, user_id, access_token, refresh_token, endpoint):
         print(refresh_token)
@@ -88,16 +86,17 @@ class Api:
         }
 
         async with aiohttp.ClientSession() as session:
-            async with session.get(url, headers=headers) as response:
-                if response.status == 200:
-                    return await response.json()
-                elif response.status == 401:
-                    await self.auty(user_id, session, refresh_token)
-                    return await self.get_something(user_id, access_token, refresh_token, endpoint)
-                else:
-                    print(f"Error: {response.status}")
-                    return None
-
+            while True:
+                async with session.get(url, headers=headers) as response:
+                    if response.status == 200:
+                        return await response.json()
+                    elif response.status == 401:
+                        success = await self.auty(user_id, session, refresh_token)
+                        if not success:
+                            return None
+                    else:
+                        print(f"Error: {response.status}")
+                        return None
 
     async def save_something(self, user_id, access_token, refresh_token, endpoint, form_data):
         url = self.base_url + endpoint
@@ -107,13 +106,15 @@ class Api:
         }
 
         async with aiohttp.ClientSession() as session:
-            async with session.post(url, headers=headers, data=form_data) as response:
-                if response.status == 201:
-                    print('All good')
-                    return await response.json()
-                elif response.status == 401:
-                    await self.auty(user_id, session, refresh_token)
-                    return await self.save_something(user_id, access_token, refresh_token, endpoint, form_data)
-                else:
-                    print(f"Error: {response.status}")
-                    return False
+            while True:
+                async with session.post(url, headers=headers, data=form_data) as response:
+                    if response.status == 201:
+                        print('All good')
+                        return await response.json()
+                    elif response.status == 401:
+                        success = await self.auty(user_id, session, refresh_token)
+                        if not success:
+                            return False
+                    else:
+                        print(f"Error: {response}")
+                        return False

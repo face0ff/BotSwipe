@@ -57,34 +57,34 @@ async def apart_edit(message: Message, state: FSMContext):
         state_list = [str(state).split("'")[1].split(':')[1] for state in CreatePage.list_create_state]
         data = await get_alldata_from_redis(state_list)
         address = await get_data_from_redis('location')
-        # print(data['images'])
+        photo_img = await save_photo(data['images'])
+        photo_schema = await save_photo(data['schema_apart'])
+        print(data)
 
-        # image_file = io.BytesIO(data['images'])
-        # schema_apart = io.BytesIO(data['schema_apart'])
 
         form_data = aiohttp.FormData()
-        # form_data.add_field('user_id', str(user_id))
-        form_data.add_field('images', data['images'], filename='image.jpg', content_type='image/jpeg')
-        form_data.add_field('schema', data['schema_apart'], filename='image.jpg', content_type='image/jpeg')
+        form_data.add_field('image_places', str(data['image_places']))
+        form_data.add_field('images', photo_img, filename='images.jpg')
+        form_data.add_field('schema', photo_schema, filename='schema.jpg')
         form_data.add_field('infrastructure_id', str(data['infrastructure_id']))
         form_data.add_field('riser_id', str(data['riser_id']))
         form_data.add_field('floor_id', str(data['floor_id']))
-        # form_data.add_field('view', str(data['view_apart']))
-        # form_data.add_field('technology', str(data['technology']))
-        # form_data.add_field('apart_status', str(data['apart_status']))
-        # form_data.add_field('quantity', str(data['quantity']))
-        # form_data.add_field('appointment', str(data['appointment']))
-        # form_data.add_field('state', str(data['state_apart']))
-        # form_data.add_field('plane', str(data['plane']))
-        # form_data.add_field('area', str(data['area']))
-        # form_data.add_field('kitchen_area', str(data['kitchen_area']))
-        # form_data.add_field('balcony', str(data['balcony']))
-        # form_data.add_field('heating', str(data['heating']))
-        # form_data.add_field('payment', str(data['payment']))
-        # form_data.add_field('communication', str(data['communication']))
-        # form_data.add_field('commission', str(data['commission']))
-        # form_data.add_field('apart_description', str(address))
-        # form_data.add_field('price', str(data['price']))
+        form_data.add_field('view', str(data['view_apart']))
+        form_data.add_field('technology', str(data['technology']))
+        form_data.add_field('apart_status', str(data['apart_status']))
+        form_data.add_field('quantity', str(data['quantity']))
+        form_data.add_field('appointment', str(data['appointment']))
+        form_data.add_field('state', str(data['state_apart']))
+        form_data.add_field('plane', str(data['plane']))
+        form_data.add_field('area', str(data['area']))
+        form_data.add_field('kitchen_area', str(data['kitchen_area']))
+        form_data.add_field('balcony', str(data['balcony']))
+        form_data.add_field('heating', str(data['heating']))
+        form_data.add_field('payment', str(data['payment']))
+        form_data.add_field('communication', str(data['communication']))
+        form_data.add_field('commission', str(data['commission']))
+        form_data.add_field('apart_description', str(address))
+        form_data.add_field('price', str(data['price']))
 
         await api.save_something(user_id, user_data.get('access_token'), user_data.get('refresh_token'),
                                  'api/v1/apartment/', form_data)
@@ -152,10 +152,13 @@ async def all_state(message: Message, state: FSMContext):
         index = 0
     if message.photo:
         photo = message.photo[-1]
-        photo_file = await save_photo(photo)
+        # photo_file = await save_photo(photo)
+        # print(photo_file)
         photo_file_url = await photo_url(photo)
+        # photo_download_url = await photo_download(photo)
+        # print(photo_download_url)
         await save_apart_to_redis(str(curr_state).split(':')[-1], photo_file_url)
-        # await save_apart_to_redis(str(curr_state).split(':')[-1], photo_file)
+        await save_apart_to_redis('url', photo_file_url)
     else:
         await save_data_to_redis(str(curr_state).split(':')[-1], message.text)
     prev_state = await get_data_from_redis('prev_state')
@@ -212,40 +215,31 @@ async def finish(message: Message, state: FSMContext):
     state_list = [str(state).split("'")[1].split(':')[1] for state in CreatePage.list_create_state]
     data = await get_alldata_from_redis(state_list)
     address = await get_data_from_redis('location')
-    print(data)
-
-    # response_message = (
-    #     f"Это ваше объявление\n"
-    #     # f"Фото: {data['images']}\n"
-    #     f"ЖК: {data['infrastructure_id']}\n"
-    #     f"Этаж: {data['floor_id']}\n"
-    #     f"Парадная: {data['riser_id']}\n"
-    #     # f"Комнаты: {data['quantity']}\n"
-    #     # f"Вид: {data['view_apart']}\n"
-    #     # f"Назначение: {data['appointment']}\n"
-    #     # f"Стейт: {data['apart_status']}\n"
-    #     # f"План: {data['plane']}\n"
-    #     # f"Площадь: {data['area']}\n"
-    #     # f"Кухня: {data['kitchen_area']}\n"
-    #     # f"Балкон: {data['balcony']}\n"
-    #     # f"Отопление: {data['heating']}\n"
-    #     # f"Платеж: {data['payment']}\n"
-    #     # f"Комиссия: {data['commission']}\n"
-    #     # f"Коммуникации: {data['communication']}\n"
-    #     # f"Цена: {data['price']}\n"
-    #     # f"Схема: {data['schema_apart']}\n"
-    #     f"Локация: {address}\n"
-    # )
+    url = await get_data_from_redis('url')
 
     await message.answer_photo(
         photo=data['images'],
         caption=
         f"Это ваше объявление\n"
-        # f"Фото: {data['images']}\n"
         f"ЖК: {data['infrastructure_id']}\n"
         f"Этаж: {data['floor_id']}\n"
         f"Парадная: {data['riser_id']}\n"
-        f"Локация: {address}\n",
+        f"Локация: {address}\n"
+        f"Комнаты: {data['quantity']}\n"
+        f"Вид: {data['view_apart']}\n"
+        f"Назначение: {data['appointment']}\n"
+        f"Стейт: {data['apart_status']}\n"
+        f"План: {data['plane']}\n"
+        f"Площадь: {data['area']}\n"
+        f"Кухня: {data['kitchen_area']}\n"
+        f"Балкон: {data['balcony']}\n"
+        f"Отопление: {data['heating']}\n"
+        f"Платеж: {data['payment']}\n"
+        f"Комиссия: {data['commission']}\n"
+        f"Коммуникации: {data['communication']}\n"
+        f"Цена: {data['price']}\n"
+        f"Схема: {url}\n"
+        ,
         reply_markup=make_row_keyboard(
             cancel_edit_done if await get_data_from_redis('lang') == 'ru' else cancel_edit_done_en)
     )
