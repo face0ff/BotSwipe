@@ -8,6 +8,10 @@ from states.state import CreatePage, WorkPage
 class ChangeFilter(CallbackData, prefix="change_filter"):
     text: str
 
+class ChangeFilterGeo(CallbackData, prefix="change_filter_geo"):
+    text: str
+    geo: str
+
 
 class StateCreateFilter(BaseFilter):
     async def __call__(self, message):

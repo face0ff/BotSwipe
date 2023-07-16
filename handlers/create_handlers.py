@@ -217,8 +217,15 @@ async def finish(message: Message, state: FSMContext):
     address = await get_data_from_redis('location')
     url = await get_data_from_redis('url')
 
+    if isinstance(data['images'], bytes):
+        # Значение является фотографией (изображением)
+        await message.answer_photo(photo=data['images'])
+    else:
+        # Значение не является фотографией
+        await message.answer(text="Это не фотография.")
+
     await message.answer_photo(
-        photo=data['images'],
+        photo=data['images'] if isinstance(data['images'], bytes) else 'https://netsh.pp.ua/wp-content/uploads/2017/08/Placeholder-1.png',
         caption=
         f"Это ваше объявление\n"
         f"ЖК: {data['infrastructure_id']}\n"

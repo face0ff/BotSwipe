@@ -8,7 +8,8 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from handlers.reg_handlers import start_reg
 from keyboards.reply_row import make_row_keyboard
 from services.api import Api
-from services.filters import ChangeFilter
+from services.filters import ChangeFilter, ChangeFilterGeo
+from services.location_to_addess import get_coordinates_from_address
 from settings.database import Database, get_data_from_redis, save_data_to_redis
 from states.state import *
 from aiogram.utils.i18n import lazy_gettext as __
@@ -111,7 +112,6 @@ async def annoncement_view(message: Message, state: FSMContext):
     api = Api()
     get_something = await api.get_something(user_id, user_data.get('access_token'), user_data.get('refresh_token'),
                                             'api/v1/apartment/')
-
     annoncement_buttons = InlineKeyboardBuilder()
     annoncement_buttons.add(types.InlineKeyboardButton(
         text=_("Предидущее"),
@@ -121,17 +121,19 @@ async def annoncement_view(message: Message, state: FSMContext):
         callback_data=ChangeFilter(text="next_annoncement").pack())
     ).add(types.InlineKeyboardButton(
         text=_("Геолокация"),
+
         callback_data=ChangeFilter(text="geo").pack())
     )
 
     if get_something['results']:
+        print(get_something['results'])
         queryset = get_something['results']
         query_list = [i for i in range(0, len(queryset))]
 
-        await message.answer(
-            text=_('Нет ни одного объявления'),
-            reply_markup=make_row_keyboard(second_page if await get_data_from_redis('lang') == 'ru' else second_page_en)
-        )
+        # await message.answer(
+        #     text=_('Нет ни одного объявления'),
+        #     reply_markup=make_row_keyboard(second_page if await get_data_from_redis('lang') == 'ru' else second_page_en)
+        # )
         await state.update_data(max=max(query_list))
         data = await state.get_data()
         if data.get('iterator') == 0:
@@ -144,6 +146,7 @@ async def annoncement_view(message: Message, state: FSMContext):
             image = queryset[i]['images'][0]['image']
         except:
             image = 'https://netsh.pp.ua/wp-content/uploads/2017/08/Placeholder-1.png'
+        await save_data_to_redis('coordinates', get_something['results'][i]['apart_description'])
         image_url = image
         if data.get('iterator') == None:
             test = await message.answer_photo(
@@ -181,8 +184,9 @@ async def annoncement_view(message: Message, state: FSMContext):
 
 @router.callback_query(ChangeFilter.filter(F.text == "geo"))
 async def show_location_callback(query: types.CallbackQuery):
-# Отправка геолокации в ответ на нажатие кнопки
-    await query.message.answer_location(latitude=51.5074, longitude=-0.1278)
+    address = await get_data_from_redis('coordinates')
+    latitude, longitude = await get_coordinates_from_address(address)
+    await query.message.answer_location(latitude=latitude, longitude=longitude)
 
 
 
