@@ -86,12 +86,12 @@ class CreatePage(StatesGroup):
 
     list_create_state = [schema_apart, images, image_places, infrastructure_id, riser_id, floor_id, view_apart,
                          technology, apart_status, quantity, appointment, state_apart, plane,
-                         area, kitchen_area, balcony, heating, payment, commission,
+                         area, kitchen_area, balcony, heating, commission,
                          communication, price]
     list_create_text = ['Схема_квартиры', 'Изображения','Размещение', 'Идентификатор_инфраструктуры',
                         'Идентификатор_парадной', 'Идентификатор_этажа', 'Вид_квартиры',
                         'Технология', 'Статус_квартиры', 'Количество', 'Назначение', 'Состояние_квартиры', 'План',
-                        'Площадь', 'Площадь_кухни', 'Балкон', 'Отопление', 'Оплата', 'Комиссия',
+                        'Площадь', 'Площадь_кухни', 'Балкон', 'Отопление', 'Комиссия',
                         'Связь', 'Цена', 'Адрес']
     list_create_text_en = ['Apartment_Schema', 'Images', 'Place', 'Infrastructure_ID',
                            'Riser_ID', 'Floor_ID', 'Apartment_View',
@@ -112,14 +112,14 @@ class CreatePage(StatesGroup):
     plane_list = ['Студия', 'Стандарт', 'Свободная', 'Пентхаус']
     payment_list = ['Наличные', 'Мат. капитал', 'Ипотека', 'Военная ипотека', 'Неважно']
 
-    payment_list_en = ['cash', 'maternity', 'mortgage', 'military', 'not']
-    communication_list_en = ['Call', 'Message', 'Call+Message']
-    view_apart_list_en = ['Secondary Housing', 'New Building', 'Cottage']
-    technology_list_en = ['Panel', 'Monolithic']
-    apart_status_list_en = ['Rented', 'Not Rented']
-    quantity_list_en = ['1-room', '2-room', '3-room', '4-room']
+    # payment_list_en = ['cash', 'maternity', 'mortgage', 'military', 'not']
+    communication_list_en = ['call', 'message', 'two']
+    view_apart_list_en = ['secondary', 'primary', 'cottage']
+    technology_list_en = ['panel', 'monolith']
+    apart_status_list_en = ['rented', 'vacant']
+    quantity_list_en = ['1', '2', '3', '4']
     appointment_list_en = ['Residential', 'Commercial', 'Industrial']
-    state_apart_list_en = ['Requires Repair', 'Repair from Builders']
-    balcony_list_en = ['Yes', 'No']
-    heating_list_en = ['Electric', 'Gas']
-    plane_list_en = ['Studio', 'Standard', 'Free', 'Penthouse']
+    state_apart_list_en = ['need', 'building']
+    balcony_list_en = ['yes', 'not']
+    heating_list_en = ['electro_heating', 'gas_heating']
+    plane_list_en = ['studio', 'standart', 'open', 'penthouse']

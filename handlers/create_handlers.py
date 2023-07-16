@@ -80,7 +80,7 @@ async def apart_edit(message: Message, state: FSMContext):
         form_data.add_field('kitchen_area', str(data['kitchen_area']))
         form_data.add_field('balcony', str(data['balcony']))
         form_data.add_field('heating', str(data['heating']))
-        form_data.add_field('payment', str(data['payment']))
+        # form_data.add_field('payment', str(data['payment']))
         form_data.add_field('communication', str(data['communication']))
         form_data.add_field('commission', str(data['commission']))
         form_data.add_field('apart_description', str(address))
@@ -174,7 +174,7 @@ async def all_state(message: Message, state: FSMContext):
         next_state_value = await next_state(curr_state)
         await state.set_state(next_state_value)
         curr_state = await state.get_state()
-        state_attr = str(curr_state).split(':')[-1] + '_list'
+        state_attr = str(curr_state).split(':')[-1] + '_list_en'
         if hasattr(CreatePage, state_attr):
             attribute_value = getattr(CreatePage, state_attr)
             await message.answer(
@@ -234,7 +234,7 @@ async def finish(message: Message, state: FSMContext):
         f"Кухня: {data['kitchen_area']}\n"
         f"Балкон: {data['balcony']}\n"
         f"Отопление: {data['heating']}\n"
-        f"Платеж: {data['payment']}\n"
+        # f"Платеж: {data['payment']}\n"
         f"Комиссия: {data['commission']}\n"
         f"Коммуникации: {data['communication']}\n"
         f"Цена: {data['price']}\n"

@@ -86,17 +86,15 @@ class Api:
         }
 
         async with aiohttp.ClientSession() as session:
-            while True:
-                async with session.get(url, headers=headers) as response:
-                    if response.status == 200:
-                        return await response.json()
-                    elif response.status == 401:
-                        success = await self.auty(user_id, session, refresh_token)
-                        if not success:
-                            return None
-                    else:
-                        print(f"Error: {response.status}")
-                        return None
+
+            async with session.get(url, headers=headers) as response:
+                if response.status == 200:
+                    return await response.json()
+                elif response.status == 401:
+                    success = await self.auty(user_id, session, refresh_token)
+                else:
+                    print(f"Error: {response.status}")
+                    return None
 
     async def save_something(self, user_id, access_token, refresh_token, endpoint, form_data):
         url = self.base_url + endpoint
@@ -106,15 +104,13 @@ class Api:
         }
 
         async with aiohttp.ClientSession() as session:
-            while True:
-                async with session.post(url, headers=headers, data=form_data) as response:
-                    if response.status == 201:
-                        print('All good')
-                        return await response.json()
-                    elif response.status == 401:
-                        success = await self.auty(user_id, session, refresh_token)
-                        if not success:
-                            return False
-                    else:
-                        print(f"Error: {response}")
-                        return False
+
+            async with session.post(url, headers=headers, data=form_data) as response:
+                if response.status == 201:
+                    print('All good')
+                    return await response.json()
+                elif response.status == 401:
+                    await self.auty(user_id, session, refresh_token)
+                else:
+                    print(f"Error: {response}")
+                    return False

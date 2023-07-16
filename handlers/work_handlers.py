@@ -45,10 +45,10 @@ async def profile(message: Message, state: FSMContext):
         await state.set_state(WorkPage.my_annoncement)
     else:
         await message.answer(
-            text=_('Refresh токен все, предеться вводить пароль'),
-            reply_markup=make_row_keyboard(log_page if await get_data_from_redis('lang') == 'ru' else log_page)
+            text=_('Перевыпускаем Refresh token'),
+            reply_markup=make_row_keyboard(list_profile if await get_data_from_redis('lang') == 'ru' else list_profile_en)
         )
-        await start_reg(message, state)
+        await state.set_state(WorkPage.workspace)
 
 @router.message(F.text == 'My Ads')
 @router.message(F.text == 'Мои обьявления')
@@ -79,12 +79,12 @@ async def annoncement(message: Message, state: FSMContext):
                 f"Кухня: {get_something[i]['kitchen_area']}\n"
                 f"Балкон: {get_something[i]['balcony']}\n"
                 f"Отопление: {get_something[i]['heating']}\n"
-                f"Платеж: {get_something[i]['payment']}\n"
+                # f"Платеж: {get_something[i]['payment']}\n"
                 f"Комиссия: {get_something[i]['commission']}\n"
                 f"Комуникации: {get_something[i]['communication']}\n"
                 f"Цена: {get_something[i]['price']}\n"
                 f"Схема: {get_something[i]['schema']}\n",
-                reply_markup=make_row_keyboard(list_profile)
+                reply_markup=make_row_keyboard(list_profile if await get_data_from_redis('lang') == 'ru' else list_profile_en)
             )
     else:
         await message.answer(
@@ -130,7 +130,7 @@ async def annoncement_view(message: Message, state: FSMContext):
 
         await message.answer(
             text=_('Нет ни одного объявления'),
-            reply_markup=make_row_keyboard(list_profile if await get_data_from_redis('lang') == 'ru' else list_profile_en)
+            reply_markup=make_row_keyboard(second_page if await get_data_from_redis('lang') == 'ru' else second_page_en)
         )
         await state.update_data(max=max(query_list))
         data = await state.get_data()
@@ -139,6 +139,7 @@ async def annoncement_view(message: Message, state: FSMContext):
         else:
             i = max(query_list)
             await state.update_data(iterator=i)
+            
         try:
             image = queryset[i]['images'][0]['image']
         except:

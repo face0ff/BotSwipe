@@ -212,7 +212,7 @@ async def reg_pass2_chosen(message: Message, state: FSMContext):
     )
     await message.answer(
         text=_('Для регистрации нажминте подтвердить'),
-        reply_markup=make_row_keyboard(prev_and_cancel if await get_data_from_redis('lang') == 'ru' else prev_and_cancel_en)
+        reply_markup=make_row_keyboard(prev_cancel_done if await get_data_from_redis('lang') == 'ru' else prev_cancel_done_en)
     )
     if message.text == 'Подтвердить':
         await process_registration(message, state)

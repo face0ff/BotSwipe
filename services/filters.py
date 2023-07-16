@@ -18,7 +18,7 @@ class StateCreateFilter(BaseFilter):
         except:
             return False
 
-        if state == 'edit' or state == 'finish':
+        if state == 'finish':
             return False
         else:
             return True
