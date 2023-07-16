@@ -1,0 +1,250 @@
+# English translations for PROJECT.
+# Copyright (C) 2023 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2023-07-14 18:19+0200\n"
+"PO-Revision-Date: 2023-07-14 14:08+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.11.0\n"
+
+#: handlers/create_handlers.py:29 handlers/create_handlers.py:176
+#: handlers/create_handlers.py:183
+#, fuzzy
+msgid "Выберите {text}"
+msgstr "Choose {state}"
+
+#: handlers/create_handlers.py:46
+msgid "Изменить"
+msgstr "Edit"
+
+#: handlers/create_handlers.py:48
+msgid "Тут вы можете изменить ранее введенные данные"
+msgstr "Here you can edit previously entered data"
+
+#: handlers/create_handlers.py:52 handlers/reg_handlers.py:162
+msgid "Подтвердить"
+msgstr "Confirm"
+
+#: handlers/create_handlers.py:54
+msgid "Супер объявление отправлено на модерацию"
+msgstr "Super ad has been sent for moderation"
+
+#: handlers/create_handlers.py:122
+msgid "Спасибо огонь"
+msgstr "Thanks a lot"
+
+#: handlers/create_handlers.py:127 handlers/create_handlers.py:190
+msgid "Выберите локацию"
+msgstr "Choose location"
+
+#: handlers/create_handlers.py:140
+msgid "Язык изменен на {new_language}"
+msgstr "Language changed to {new_language}"
+
+#: handlers/create_handlers.py:216
+msgid ""
+"Это ваше объявление\n"
+"Фото: {data['images']}\n"
+"ЖК: {infra}\n"
+"Этаж: {floor}\n"
+"Парадная: {riser}\n"
+"Локация: {address}\n"
+msgstr ""
+"This is your ad\n"
+"Photo: {data['images']}\n"
+"Complex: {infra}\n"
+"Floor: {floor}\n"
+"Riser: {riser}\n"
+"Location: {address}\n"
+
+#: handlers/reg_handlers.py:27
+msgid "Вы в базе есть"
+msgstr "You are already in the database"
+
+#: handlers/reg_handlers.py:31
+msgid "Вас не найдено, надо регистрироваться"
+msgstr "You are not found, you need to register"
+
+#: handlers/reg_handlers.py:41
+#, fuzzy
+msgid "Давай попробуем зарегистрироваться, введи имейл"
+msgstr "Let's try to register, enter your email"
+
+#: handlers/reg_handlers.py:49
+msgid "Введите имейл"
+msgstr "Enter your email"
+
+#: handlers/reg_handlers.py:66
+msgid "На главную"
+msgstr "Go to the main menu"
+
+#: handlers/reg_handlers.py:77
+msgid "Главная"
+msgstr "Main"
+
+#: handlers/reg_handlers.py:83
+msgid "Выберите {state}"
+msgstr "Choose {state}"
+
+#: handlers/reg_handlers.py:92
+#, fuzzy
+msgid "Что опять!"
+msgstr "What again!"
+
+#: handlers/reg_handlers.py:112 handlers/reg_handlers.py:119
+#, fuzzy
+msgid "И куда вас это привело. Снова ко мне!"
+msgstr "And where did it lead you? Back to me!"
+
+#: handlers/reg_handlers.py:127
+msgid "Или регистрация или смерть"
+msgstr "Either registration or death"
+
+#: handlers/reg_handlers.py:134 handlers/reg_handlers.py:284
+msgid "Введи имейл"
+msgstr "Enter your email"
+
+#: handlers/reg_handlers.py:138 handlers/reg_handlers.py:146
+msgid "Введи пароль"
+msgstr "Enter your password"
+
+#: handlers/reg_handlers.py:150 handlers/reg_handlers.py:160
+msgid "Повторите пароль"
+msgstr "Repeat your password"
+
+#: handlers/reg_handlers.py:184
+#, fuzzy
+msgid "Изменить имейл"
+msgstr "Enter your email"
+
+#: handlers/reg_handlers.py:189 handlers/reg_handlers.py:194
+#, fuzzy
+msgid "Изменить пароль"
+msgstr "Enter your password"
+
+#: handlers/reg_handlers.py:199
+msgid ""
+"Вы пытаетесь зарегаться под этими данными:\n"
+"Имейл: {email}\n"
+msgstr ""
+"You are trying to register with the following data:\n"
+"Email: {email}\n"
+
+#: handlers/reg_handlers.py:204
+msgid "Пароль: {password1}\n"
+msgstr "Password: {password1}\n"
+
+#: handlers/reg_handlers.py:208
+msgid "Повторный пароль: {password2}"
+msgstr "Repeat password: {password2}"
+
+#: handlers/reg_handlers.py:212
+#, fuzzy
+msgid "Для регистрации нажмите Подтвердить"
+msgstr "Either registration or death"
+
+#: handlers/reg_handlers.py:230
+msgid "Вы зарегистрировались, ваш имейл - {user_data}, подтвердите имейл на почте."
+msgstr "You have registered, your email is {user_data}, please confirm your email in your mailbox."
+
+#: handlers/reg_handlers.py:240
+msgid "Ошибочка вышла, имейл не прошел валидацию"
+msgstr "Oops, the email did not pass validation"
+
+#: handlers/reg_handlers.py:246 handlers/reg_handlers.py:252
+msgid "Ошибочка вышла, такой имейл уже есть в базе"
+msgstr "Oops, this email already exists in the database"
+
+#: handlers/reg_handlers.py:264
+#, fuzzy
+msgid "Введите новый имейл"
+msgstr "Enter your email"
+
+#: handlers/reg_handlers.py:271
+#, fuzzy
+msgid "Введите новый пароль"
+msgstr "Enter your password"
+
+#: handlers/reg_handlers.py:278
+#, fuzzy
+msgid "Подтвердите новый пароль"
+msgstr "Repeat your password"
+
+#: handlers/reg_handlers.py:288 handlers/reg_handlers.py:295
+#, fuzzy
+msgid "Введите пароль"
+msgstr "Enter your password"
+
+#: handlers/reg_handlers.py:317
+msgid "Вход успешен"
+msgstr "Login successful"
+
+#: handlers/work_handlers.py:23
+msgid "Это ваш профиль"
+msgstr "This is your profile"
+
+#: handlers/work_handlers.py:42
+msgid ""
+"Это ваш профиль\n"
+"Имейл: {email}\n"
+"Имя: {first}\n"
+"Фамилия: {last}"
+msgstr ""
+"This is your profile\n"
+"Email: {email}\n"
+"First name: {first}\n"
+"Last name: {last}"
+
+#: handlers/work_handlers.py:49
+msgid "Refresh токен все, придется вводить пароль"
+msgstr "Refresh token all, you'll have to enter your password"
+
+#: handlers/work_handlers.py:90
+msgid "Скорее всего объявлений нет"
+msgstr "Most likely there are no ads"
+
+#: handlers/work_handlers.py:100
+msgid "Объявления"
+msgstr "Ads"
+
+#: handlers/work_handlers.py:116
+msgid "Предыдущее"
+msgstr "Previous"
+
+#: handlers/work_handlers.py:119
+msgid "Следующее"
+msgstr "Next"
+
+#: handlers/work_handlers.py:122
+msgid "Геолокация"
+msgstr "Geolocation"
+
+#: handlers/work_handlers.py:131
+msgid "Нет ни одного объявления"
+msgstr "There are no ads"
+
+#: handlers/work_handlers.py:173
+msgid "Нет записей в базе"
+msgstr "No records in the database"
+
+
+#~ msgid "Создание"
+#~ msgstr "Create"
+
+#~ msgid "Профиль"
+#~ msgstr "Profile"
+
+#~ msgid "Язык"
+#~ msgstr "Language"
+
